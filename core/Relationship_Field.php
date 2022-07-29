@@ -3,7 +3,7 @@
 namespace Carbon_Field_Relationship;
 
 use Carbon_Fields\Field\Field;
-use Exception;
+use WP_Error;
 
 class Relationship_Field extends Field {
 
@@ -95,8 +95,8 @@ class Relationship_Field extends Field {
 		$field_data = parent::to_json( $load );
 
 		$field_data = array_merge($field_data, array(
-			'context' => $this->object_context,
-			'type' => $this->object_type,
+			'object_context' => $this->object_context,
+			'object_type' => $this->object_type,
 			'options' => $this->query(),
 			'empty' => __("No objects found")
 		) );
@@ -152,13 +152,13 @@ class Relationship_Field extends Field {
 				if(in_array($this->object_type, $contexts[$this->object_context])){
 					return true;
 				}
-				$this->error = "invalid-type|Invalid context ".$this->object_context;
+				$this->error = "invalid-type|Invalid type ".$this->object_type;
 				return false;
 			}
 			return true;
 		}
 
-		$this->error = "invalid-context|Invalid type ".$this->object_type;
+		$this->error = "invalid-context|Invalid context ".$this->object_context;
 		return false;
 	}
 
