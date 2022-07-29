@@ -1,0 +1,40 @@
+{
+    "name": "rbfraphael/carbon-field-relationship",
+    "description": "Carbon Fields extension, that adds a relationship field type.",
+    "keywords": ["wordpress", "carbon-field", "carbon-field-relationship"],
+    "homepage": "https://github.com/rbfraphael/carbon-field-relationship/",
+    "type": "library",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Plamen Kostadinov",
+            "email": "pkostadinov.2create@gmail.com"
+        },
+        {
+            "name": "Atanas Angelov",
+            "email": "atanas.angelov.dev@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Viktor Vasilev",
+            "email": "liberalcho@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "RBFraphael",
+            "email": "rbfraphael@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "htmlburger/carbon-fields": "^3.0"
+    },
+    "autoload": {
+        "files": [
+            "field.php"
+        ],
+        "psr-4": {
+            "Carbon_Field_Relationship\\": "core/"
+        }
+    }
+}
