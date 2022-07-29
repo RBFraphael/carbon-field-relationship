@@ -12,21 +12,21 @@ class Relationship_Field extends Field {
 	 *
 	 * @var null|float
 	 */
-	protected $context = null;
+	protected $object_context = null;
 
 	/**
 	 * Type to query objects
 	 *
 	 * @var null|float
 	 */
-	protected $type = null;
+	protected $object_type = null;
 
 	/**
 	 * Additional args to query objects
 	 * 
 	 * @var array
 	 */
-	protected $args = [];
+	protected $query_args = [];
 
 	/**
 	 * Used to detect error
@@ -95,8 +95,8 @@ class Relationship_Field extends Field {
 		$field_data = parent::to_json( $load );
 
 		$field_data = array_merge($field_data, array(
-			'context' => $this->context,
-			'type' => $this->type,
+			'context' => $this->object_context,
+			'type' => $this->object_type,
 			'options' => $this->query(),
 			'empty' => __("No objects found")
 		) );
@@ -111,9 +111,9 @@ class Relationship_Field extends Field {
 	 * @param  string	 $type
 	 * @return self      $this
 	 */
-	function set_context( $context, $type ) {
-		$this->context = strtolower(trim($context));
-		$this->type = trim($type);
+	function set_object( $context, $type ) {
+		$this->object_context = strtolower(trim($context));
+		$this->object_type = trim($type);
 
 		if(!$this->validate_context()){
 			$error_array = explode("|", $this->error);
@@ -130,7 +130,7 @@ class Relationship_Field extends Field {
 	 * @param array $args
 	 */
 	function set_args( $args = [] ) {
-		$this->args = $args;
+		$this->query_args = $args;
 	}
 
 	/**
@@ -146,19 +146,19 @@ class Relationship_Field extends Field {
 			'user' => []
 		];
 
-		if(array_key_exists($this->context, $contexts)){
-			$types = $contexts[$this->context];
+		if(array_key_exists($this->object_context, $contexts)){
+			$types = $contexts[$this->object_context];
 			if(count($types) > 0){
-				if(in_array($this->type, $contexts[$this->context])){
+				if(in_array($this->object_type, $contexts[$this->object_context])){
 					return true;
 				}
-				$this->error = "invalid-type|Invalid context ".$this->context;
+				$this->error = "invalid-type|Invalid context ".$this->object_context;
 				return false;
 			}
 			return true;
 		}
 
-		$this->error = "invalid-context|Invalid type ".$this->type;
+		$this->error = "invalid-context|Invalid type ".$this->object_type;
 		return false;
 	}
 
@@ -171,16 +171,16 @@ class Relationship_Field extends Field {
 	{
 		$options = [];
 
-		switch($this->context){
+		switch($this->object_context){
 			case "post":
 				$args = [
-					'post_type' => $this->type,
+					'post_type' => $this->object_type,
 					'post_status' => "any",
 					'order' => "DESC",
 					'orderby' => "date",
 					'posts_per_page' => -1
 				];
-				$args = array_merge($args, $this->args);
+				$args = array_merge($args, $this->query_args);
 				foreach(get_posts($args) as $post){
 					$options[] = [
 						'label' => $post->post_title . ($post->post_status != "publish" ? " - ".$post->post_status : ""),
@@ -191,10 +191,10 @@ class Relationship_Field extends Field {
 
 			case "taxonomy_term":
 				$args = [
-					'taxonomy' => $this->type,
+					'taxonomy' => $this->object_type,
 					'hide_empty' => false
 				];
-				$args = array_merge($args, $this->args);
+				$args = array_merge($args, $this->query_args);
 				foreach(get_terms($args) as $term){
 					$options[] = [
 						'label' => $term->name . " (" . $term->count . ")",
@@ -204,7 +204,7 @@ class Relationship_Field extends Field {
 				break;
 
 			case "user":
-				foreach(get_users($this->args) as $user){
+				foreach(get_users($this->query_args) as $user){
 					$meta = get_userdata($user->ID);
 					$options[] = [
 						'label' => $meta->display_name . " - " . $meta->user_email,
