@@ -128,9 +128,12 @@ class Relationship_Field extends Field {
 	 * Set additional arguments to query objects
 	 * 
 	 * @param array $args
+	 * @return self	$this
 	 */
 	function set_args( $args = [] ) {
 		$this->query_args = $args;
+		
+		return $this;
 	}
 
 	/**
